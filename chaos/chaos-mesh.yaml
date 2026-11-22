@@ -1,0 +1,35 @@
+apiVersion: chaos-mesh.org/v1alpha1
+kind: PodChaos
+metadata:
+  name: platform-api-pod-failure
+  namespace: cloud-native-platform
+spec:
+  action: pod-failure
+  mode: one
+  duration: "30s"
+  selector:
+    namespaces:
+      - cloud-native-platform
+    labelSelectors:
+      app: platform-api
+  scheduler:
+    cron: "@every 5m"
+---
+apiVersion: chaos-mesh.org/v1alpha1
+kind: NetworkChaos
+metadata:
+  name: platform-api-network-delay
+  namespace: cloud-native-platform
+spec:
+  action: delay
+  mode: one
+  duration: "20s"
+  delay:
+    latency: "250ms"
+    correlation: "100"
+  direction: to
+  selector:
+    namespaces:
+      - cloud-native-platform
+    labelSelectors:
+      app: platform-api

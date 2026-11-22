@@ -1,0 +1,5 @@
+com\cloudnative\platform\api\ApiController$JobResponse.class
+com\cloudnative\platform\api\ApiController$JobRequest.class
+com\cloudnative\platform\api\ApiController.class
+com\cloudnative\platform\api\ApiApplication.class
+com\cloudnative\platform\api\ApiController$WorkerResponse.class

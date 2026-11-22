@@ -1,0 +1,49 @@
+name: Build and validate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+          cache: maven
+      - name: Maven test
+        working-directory: cloud-native-java-platform
+        run: mvn test
+      - name: Maven package
+        working-directory: cloud-native-java-platform
+        run: mvn package -DskipTests
+      - name: Helm lint
+        run: |
+          helm lint cloud-native-java-platform/helm/platform
+          helm template platform cloud-native-java-platform/helm/platform \
+            --namespace cloud-native-platform \
+            --set platformApi.tag=${GITHUB_SHA:-local} \
+            --set platformWorker.tag=${GITHUB_SHA:-local} > /tmp/platform.yaml
+      - name: Terraform fmt check
+        run: terraform fmt -check -recursive cloud-native-java-platform/terraform
+
+  publish-placeholder:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    environment: aws-demo
+    steps:
+      - uses: actions/checkout@v4
+      - name: Deployment credentials required
+        run: |
+          echo "No deployment is performed by this placeholder job."
+          echo "Configure AWS credentials or GitHub Actions OIDC before enabling pushes."

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cloud-native-java-platform
+description: Helm chart for the Cloud-Native Java Developer Platform
+type: application
+version: 1.0.0
+appVersion: "1.0.0"

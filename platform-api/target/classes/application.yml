@@ -1,0 +1,27 @@
+server:
+  shutdown: graceful
+spring:
+  application:
+    name: platform-api
+  cloud:
+    kubernetes:
+      enabled: false
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,prometheus
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0
+
+platform:
+  worker:
+    url: http://localhost:8081
